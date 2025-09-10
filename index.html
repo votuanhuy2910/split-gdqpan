@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            Ứng dụng Chia đợt Sinh viên học Giáo dục Quốc phòng - An ninh
+        </title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: #f3f4f6;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2rem;
+            }
+            .card {
+                background-color: #ffffff;
+                border-radius: 1rem;
+                padding: 1.5rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            /* ...existing code... */
+            .card h2 {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: #1f2937; /* Darker gray for better contrast */
+                margin-bottom: 1rem;
+            }
+
+            #minMaxInputs .flex {
+                gap: 1rem; /* Add spacing between inputs */
+            }
+
+            #minMaxInputs input {
+                border: 1px solid #d1d5db;
+                border-radius: 0.5rem;
+                padding: 0.5rem;
+                transition: border-color 0.2s, box-shadow 0.2s;
+            }
+
+            #minMaxInputs input:focus {
+                border-color: #3b82f6; /* Blue border on focus */
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* Blue shadow */
+                outline: none;
+            }
+
+            #addBatch {
+                background-color: #6b7280; /* Neutral gray */
+                color: #ffffff;
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+                transition: background-color 0.2s, transform 0.2s;
+            }
+
+            #addBatch:hover {
+                background-color: #4b5563; /* Darker gray on hover */
+                transform: scale(1.05); /* Slight zoom effect */
+            }
+
+            #addBatch:active {
+                transform: scale(0.95); /* Pressed effect */
+            }
+            /* ...existing code... */
+            .input-group label {
+                font-weight: 500;
+                color: #4b5563;
+            }
+            .input-group input,
+            .input-group select {
+                width: 100%;
+                padding: 0.5rem 1rem;
+                border: 1px solid #d1d5db;
+                border-radius: 0.5rem;
+                margin-top: 0.25rem;
+            }
+            .table-container {
+                overflow-x: auto;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            thead th {
+                background-color: #e5e7eb;
+                text-align: left;
+                padding: 0.75rem 1rem;
+                font-weight: 600;
+                color: #374151;
+                border-bottom: 2px solid #e5e7eb;
+            }
+            tbody td {
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid #e5e7eb;
+                color: #4b5563;
+            }
+            .remove-batch {
+                margin-top: 1.5rem;
+                transition: background-color 0.2s, transform 0.2s;
+            }
+
+            .remove-batch:hover {
+                transform: scale(1.05);
+            }
+
+            .remove-batch:active {
+                transform: scale(0.95);
+            }
+        </style>
+    </head>
+    <body class="bg-gray-100 p-8">
+        <div class="container mx-auto space-y-8">
+            <!-- HEADER -->
+            <header class="text-center">
+                <h1 class="text-4xl font-bold text-gray-800">
+                    Ứng dụng Chia đợt Sinh viên học Giáo dục Quốc phòng - An
+                    ninh
+                </h1>
+                <p class="text-gray-600 mt-2">
+                    Quản lý và phân chia sinh viên theo khoa/viện
+                </p>
+            </header>
+
+            <!-- INPUT SECTION -->
+            <div class="card grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Nhập thông tin thủ công -->
+                <div class="md:col-span-1">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">
+                        Nhập thông tin Khoa/Viện
+                    </h2>
+                    <div class="flex items-end space-x-4">
+                        <div class="input-group flex-grow">
+                            <label for="departmentName" class="block text-sm"
+                                >Khoa/Viện</label
+                            >
+                            <select
+                                id="departmentName"
+                                class="mt-1 block w-full border border-gray-300 rounded-lg p-2"
+                            >
+                                <option value="" disabled selected>
+                                    Chọn Khoa/Viện
+                                </option>
+                                <option
+                                    value="Khoa Công nghệ thông tin kinh doanh"
+                                >
+                                    Khoa Công nghệ thông tin kinh doanh
+                                </option>
+                                <option value="Khoa Luật">Khoa Luật</option>
+                                <option value="Khoa KDQT">Khoa KDQT</option>
+                                <option value="Khoa Kế toán">
+                                    Khoa Kế toán
+                                </option>
+                                <option value="Khoa Tài chính">
+                                    Khoa Tài chính
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-group flex-grow">
+                            <label for="studentCount" class="block text-sm"
+                                >Số lượng sinh viên</label
+                            >
+                            <input
+                                type="number"
+                                id="studentCount"
+                                placeholder="Số lượng"
+                                class="mt-1 block w-full"
+                            />
+                        </div>
+                        <button
+                            id="addDepartment"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+                        >
+                            Thêm
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">
+                        Nhập từng Khoa/Viện một cách thủ công.
+                    </p>
+                </div>
+
+                <!-- Nhập thông tin bằng file Excel -->
+                <div class="md:col-span-1">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">
+                        Nhập từ tệp Excel
+                    </h2>
+                    <div class="flex items-end space-x-4">
+                        <div class="input-group flex-grow">
+                            <label for="excelFile" class="block text-sm"
+                                >Chọn tệp (.xlsx, .xls)</label
+                            >
+                            <input
+                                type="file"
+                                id="excelFile"
+                                accept=".xlsx, .xls"
+                                class="mt-1 block w-full"
+                            />
+                        </div>
+                        <button
+                            id="importExcel"
+                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+                        >
+                            Import
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">
+                        Tệp Excel phải có 2 cột: "Khoa/Viện" và "Số lượng".
+                    </p>
+                </div>
+
+                <!-- Chia đợt -->
+                <div class="md:col-span-1">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">
+                        Thiết lập Chia đợt
+                    </h2>
+                    <div id="minMaxInputs" class="space-y-4">
+                        <!-- Dynamic inputs for min/max values for each batch -->
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-grow">
+                                <label
+                                    class="block text-sm font-medium text-gray-700"
+                                    >Đợt 1</label
+                                >
+                                <input
+                                    type="number"
+                                    id="min1"
+                                    placeholder="Min"
+                                    class="mt-1 w-full"
+                                    value="0"
+                                />
+                            </div>
+                            <div class="flex-grow">
+                                <label
+                                    class="block text-sm font-medium text-gray-700"
+                                    >&nbsp;</label
+                                >
+                                <input
+                                    type="number"
+                                    id="max1"
+                                    placeholder="Max"
+                                    class="mt-1 w-full"
+                                    value="3600"
+                                />
+                            </div>
+                        </div>
+                        <!-- You can add more batches here manually, or dynamically with JS -->
+                    </div>
+                    <div class="flex justify-end mt-4">
+                        <button
+                            id="addBatch"
+                            class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg text-sm"
+                        >
+                            + Thêm đợt
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT - Bảng thông tin & Button Generate -->
+            <div class="card grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-2">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">
+                        Bảng thông tin Sinh viên
+                    </h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-sm font-medium text-gray-700">
+                            Tổng số sinh viên:
+                            <span id="totalStudents" class="font-bold text-lg"
+                                >0</span
+                            >
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            Nhấp vào số lượng để sửa.
+                        </p>
+                    </div>
+                    <div class="table-container">
+                        <table
+                            class="min-w-full bg-white rounded-lg overflow-hidden"
+                        >
+                            <thead>
+                                <tr>
+                                    <th class="py-3 px-4 text-left">
+                                        Khoa/Viện
+                                    </th>
+                                    <th class="py-3 px-4 text-left">
+                                        Số lượng sinh viên
+                                    </th>
+                                    <th class="py-3 px-4 text-left">
+                                        Hành động
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="md:col-span-1 flex items-center justify-center">
+                    <button
+                        id="generateButton"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-full text-lg shadow-lg transform transition-all duration-300 hover:scale-105"
+                    >
+                        Generate
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESULT SECTION -->
+            <div
+                id="resultsSection"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                style="display: none"
+            >
+                <h2
+                    class="col-span-full text-2xl font-bold text-gray-800 text-center mt-4"
+                >
+                    Kết quả Chia đợt
+                </h2>
+                <!-- Generated tables will be inserted here -->
+            </div>
+        </div>
+
+        <!-- For Excel import functionality -->
+        <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const departmentNameInput =
+                    document.getElementById("departmentName");
+                const studentCountInput =
+                    document.getElementById("studentCount");
+                const addDepartmentBtn =
+                    document.getElementById("addDepartment");
+                const excelFileInput = document.getElementById("excelFile");
+                const importExcelBtn = document.getElementById("importExcel");
+                const minMaxInputsContainer =
+                    document.getElementById("minMaxInputs");
+                const addBatchBtn = document.getElementById("addBatch");
+                const dataTableBody = document.getElementById("dataTableBody");
+                const generateButton =
+                    document.getElementById("generateButton");
+                const resultsSection =
+                    document.getElementById("resultsSection");
+                const totalStudentsDisplay =
+                    document.getElementById("totalStudents");
+
+                let studentData = [];
+                let batchCount = 1;
+
+                // Function to calculate and display the total student count
+                const updateTotalStudents = () => {
+                    const total = studentData.reduce(
+                        (sum, current) => sum + current.count,
+                        0
+                    );
+                    totalStudentsDisplay.textContent = total;
+                };
+
+                // Function to render the main data table
+                const renderDataTable = () => {
+                    dataTableBody.innerHTML = "";
+                    studentData.forEach((item, index) => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                        <td>${item.department}</td>
+                        <td>
+                            <input type="number" value="${item.count}" class="w-24 bg-transparent border-none text-center" data-index="${index}">
+                        </td>
+                        <td>
+                            <button class="text-red-500 hover:text-red-700" data-index="${index}">Xóa</button>
+                        </td>
+                    `;
+                        dataTableBody.appendChild(row);
+                    });
+                    updateTotalStudents();
+                };
+
+                // Add department manually
+                addDepartmentBtn.addEventListener("click", () => {
+                    const name = departmentNameInput.value.trim();
+                    const count = parseInt(studentCountInput.value, 10);
+
+                    if (name && !isNaN(count) && count > 0) {
+                        studentData.push({ department: name, count: count });
+                        renderDataTable();
+                        departmentNameInput.value = "";
+                        studentCountInput.value = "";
+                    } else {
+                        alert(
+                            "Vui lòng nhập tên Khoa/Viện và số lượng hợp lệ."
+                        );
+                    }
+                });
+
+                // Handle changes in the student count input fields
+                dataTableBody.addEventListener("change", (event) => {
+                    if (
+                        event.target.tagName === "INPUT" &&
+                        event.target.type === "number"
+                    ) {
+                        const index = event.target.dataset.index;
+                        const newCount = parseInt(event.target.value, 10);
+                        if (!isNaN(newCount) && newCount >= 0) {
+                            studentData[index].count = newCount;
+                            updateTotalStudents();
+                        } else {
+                            alert("Số lượng không hợp lệ.");
+                            event.target.value = studentData[index].count; // Revert to old value
+                        }
+                    }
+                });
+
+                // Handle delete button click
+                dataTableBody.addEventListener("click", (event) => {
+                    if (
+                        event.target.tagName === "BUTTON" &&
+                        event.target.textContent === "Xóa"
+                    ) {
+                        const index = event.target.dataset.index;
+                        studentData.splice(index, 1);
+                        renderDataTable();
+                    }
+                });
+
+                // Import from Excel
+                importExcelBtn.addEventListener("click", () => {
+                    const file = excelFileInput.files[0];
+                    if (!file) {
+                        alert("Vui lòng chọn một tệp Excel để import.");
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: "array" });
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        const json = XLSX.utils.sheet_to_json(worksheet);
+
+                        // Map the data to the correct format, assuming column headers "Khoa/Viện" and "Số lượng"
+                        studentData = json
+                            .map((row) => ({
+                                department: row["Khoa/Viện"],
+                                count: parseInt(row["Số lượng"], 10),
+                            }))
+                            .filter(
+                                (item) => item.department && !isNaN(item.count)
+                            );
+
+                        renderDataTable();
+                    };
+                    reader.readAsArrayBuffer(file);
+                });
+
+                // Add a new batch input field
+                addBatchBtn.addEventListener("click", () => {
+                    batchCount++;
+                    const newBatchInput = document.createElement("div");
+                    newBatchInput.className =
+                        "flex items-center space-x-4 batch-row";
+                    newBatchInput.setAttribute("data-batch-id", batchCount);
+                    newBatchInput.innerHTML = `
+                        <div class="flex-grow">
+                            <label class="block text-sm font-medium text-gray-700">Đợt ${batchCount}</label>
+                            <input type="number" id="min${batchCount}" placeholder="Min" class="mt-1 w-full" value="0">
+                        </div>
+                        <div class="flex-grow">
+                            <label class="block text-sm font-medium text-gray-700">&nbsp;</label>
+                            <input type="number" id="max${batchCount}" placeholder="Max" class="mt-1 w-full" value="3600">
+                        </div>
+                        <button class="remove-batch bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg text-sm">
+                            Xóa
+                        </button>
+                    `;
+                    minMaxInputsContainer.appendChild(newBatchInput);
+                });
+
+                // Handle batch removal
+                minMaxInputsContainer.addEventListener("click", (event) => {
+                    if (event.target.classList.contains("remove-batch")) {
+                        const batchRow = event.target.closest(".batch-row");
+                        if (batchRow) {
+                            batchRow.remove();
+                        }
+                    }
+                });
+
+                // Generate results
+                generateButton.addEventListener("click", () => {
+                    if (studentData.length === 0) {
+                        alert("Vui lòng nhập dữ liệu sinh viên trước khi tạo.");
+                        return;
+                    }
+
+                    const batches = [];
+                    for (let i = 1; i <= batchCount; i++) {
+                        const min = parseInt(
+                            document.getElementById(`min${i}`).value,
+                            10
+                        );
+                        const max = parseInt(
+                            document.getElementById(`max${i}`).value,
+                            10
+                        );
+                        if (isNaN(min) || isNaN(max) || min > max) {
+                            alert(`Dữ liệu Min/Max của Đợt ${i} không hợp lệ.`);
+                            return;
+                        }
+                        batches.push({ min, max, currentTotal: 0, data: [] });
+                    }
+
+                    const unassignedStudents = [];
+                    const studentsToAssign = JSON.parse(
+                        JSON.stringify(studentData)
+                    ); // Deep copy
+
+                    // Sort students by count, largest first, to try and fit them better
+                    studentsToAssign.sort((a, b) => b.count - a.count);
+
+                    studentsToAssign.forEach((student) => {
+                        let assigned = false;
+                        for (let i = 0; i < batches.length; i++) {
+                            const batch = batches[i];
+                            if (
+                                batch.currentTotal + student.count <=
+                                batch.max
+                            ) {
+                                batch.data.push({
+                                    department: student.department,
+                                    count: student.count,
+                                });
+                                batch.currentTotal += student.count;
+                                assigned = true;
+                                break; // Move to next student
+                            }
+                        }
+                        if (!assigned) {
+                            unassignedStudents.push(student);
+                        }
+                    });
+
+                    // Render results
+                    resultsSection.innerHTML = "";
+                    resultsSection.style.display = "grid";
+
+                    batches.forEach((batch, index) => {
+                        const batchDiv = document.createElement("div");
+                        batchDiv.className = "card";
+                        batchDiv.innerHTML = `
+                        <h3 class="text-xl font-semibold text-gray-700 mb-4">Kết quả Đợt ${
+                            index + 1
+                        }</h3>
+                        <p class="text-sm font-medium text-gray-700">Tổng số sinh viên: <span class="font-bold">${
+                            batch.currentTotal
+                        }</span></p>
+                        <div class="table-container mt-2">
+                            <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                                <thead>
+                                    <tr>
+                                        <th class="py-3 px-4 text-left">Khoa/Viện</th>
+                                        <th class="py-3 px-4 text-left">Số lượng sinh viên</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${batch.data
+                                        .map(
+                                            (item) => `
+                                        <tr>
+                                            <td>${item.department}</td>
+                                            <td>${item.count}</td>
+                                        </tr>
+                                    `
+                                        )
+                                        .join("")}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                        resultsSection.appendChild(batchDiv);
+                    });
+
+                    if (unassignedStudents.length > 0) {
+                        const unassignedDiv = document.createElement("div");
+                        unassignedDiv.className = "card col-span-full mt-8";
+                        unassignedDiv.innerHTML = `
+                        <h3 class="text-xl font-semibold text-red-700 mb-4">Các Khoa/Viện không thể phân bổ</h3>
+                        <p class="text-red-500">Các khoa/viện dưới đây có số lượng sinh viên vượt quá khả năng chứa của các đợt đã thiết lập:</p>
+                        <ul class="list-disc list-inside mt-2 space-y-1">
+                            ${unassignedStudents
+                                .map(
+                                    (s) =>
+                                        `<li>${s.department} (${s.count} sinh viên)</li>`
+                                )
+                                .join("")}
+                        </ul>
+                    `;
+                        resultsSection.appendChild(unassignedDiv);
+                    }
+                });
+
+                // Initial render
+                renderDataTable();
+            });
+        </script>
+    </body>
+</html>
