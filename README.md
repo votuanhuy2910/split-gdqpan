@@ -1,25 +1,25 @@
 # split-gdqpan
 
-__Làm thêm chức năng phân luồng theo Trường thành viên__
-*COB*
-  Khoa Quản trị (School of Management)\\
-  Khoa Kinh doanh quốc tế - Marketing (School of International Business - Marketing)\\
-  Khoa Tài chính (School of Finance)\\
-  Khoa Ngân hàng (School of Banking)\\
-  Khoa Kế toán (School of Accounting)\\
-  Khoa Du lịch (School of Tourism)\\
-CELG\\
-  Khoa Kinh tế (School of Economics)\\
-  Khoa Tài chính công (School of Public Finance)\\
-  Khoa Luật (School of Law)\\
-  Khoa Quản lý nhà nước (School of Government)\\
-  Khoa Ngoại ngữ (School of Foreign Languages)\\
-  Khoa Toán - Thống kê (School of Mathematics - Statistics)\\
-CTD\\
-  Khoa Công nghệ thông tin kinh doanh (School of Business Information Technology)\\
-  Khoa Thiết kế Truyền thông (School of Media Design)\\
-  Viện Công nghệ thông minh và tương tác (Institute of Intelligent and Interactive Technologies) - ưu tiên đợt 1\\
-  Viện Đổi mới sáng tạo (UEH Institute of Innovation (UII))\\
-  Viện Đô thị thông minh và quản lý (Institute of Smart City and Management (ISCM))\\
-ISB\\
-Viện Khoa học chính trị - xã hội (School of Political and Social Sciences)
+- Làm thêm chức năng phân luồng theo Trường thành viên
+- COB
+  - Khoa Quản trị (School of Management)
+  - Khoa Kinh doanh quốc tế - Marketing (School of International Business - Marketing)
+  - Khoa Tài chính (School of Finance)
+  - Khoa Ngân hàng (School of Banking)
+  - Khoa Kế toán (School of Accounting)
+  - Khoa Du lịch (School of Tourism)
+- CELG
+  - Khoa Kinh tế (School of Economics)
+  - Khoa Tài chính công (School of Public Finance)
+  - Khoa Luật (School of Law)
+  - Khoa Quản lý nhà nước (School of Government)
+  - Khoa Ngoại ngữ (School of Foreign Languages)
+  - Khoa Toán - Thống kê (School of Mathematics - Statistics)
+- CTD
+  - Khoa Công nghệ thông tin kinh doanh (School of Business Information Technology)
+  - Khoa Thiết kế Truyền thông (School of Media Design)
+  - Viện Công nghệ thông minh và tương tác (Institute of Intelligent and Interactive Technologies) - ưu tiên đợt 1
+  - Viện Đổi mới sáng tạo (UEH Institute of Innovation (UII))
+  - Viện Đô thị thông minh và quản lý (Institute of Smart City and Management (ISCM))
+- ISB
+- Viện Khoa học chính trị - xã hội (School of Political and Social Sciences)
