@@ -102,6 +102,12 @@ tbody td {
 .remove-batch:active {
     transform: scale(0.95);
 }
+.draggable-row {
+    cursor: grab;
+}
+.drag-over {
+    background-color: #e0f2fe;
+}
 /* Loader animation */
 .loader {
     border: 8px solid #f3f3f3; /* Light gray */

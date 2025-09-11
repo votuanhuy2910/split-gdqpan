@@ -268,6 +268,7 @@
                     document.getElementById("exportExcelButton");
 
                 let studentData = [];
+                let batches = [];
                 let batchCount = 1;
 
                 // Function to calculate and display the total student count
@@ -296,6 +297,79 @@
                         dataTableBody.appendChild(row);
                     });
                     updateTotalStudents();
+                };
+
+                // Function to render a single batch result table
+                const renderBatchTable = (batch, index) => {
+                    return `
+                        <div class="card" id="batch-results-${index}">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Kết quả Đợt ${
+                                index + 1
+                            }</h3>
+                            <p class="text-sm font-medium text-gray-700">Tổng số sinh viên: <span class="font-bold">${
+                                batch.currentTotal
+                            }</span></p>
+                            <div class="table-container mt-2">
+                                <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                                    <thead>
+                                        <tr>
+                                            <th class="py-3 px-4 text-left">Khoa/Viện</th>
+                                            <th class="py-3 px-4 text-left">Số lượng sinh viên</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${batch.data
+                                            .map(
+                                                (item, itemIndex) => `
+                                            <tr draggable="true" class="draggable-row" data-department="${item.department}" data-count="${item.count}" data-source-batch-index="${index}" data-source-item-index="${itemIndex}">
+                                                <td>${item.department}</td>
+                                                <td>${item.count}</td>
+                                            </tr>
+                                        `
+                                            )
+                                            .join("")}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                };
+
+                // Function to render all batch result tables
+                const renderResults = (batches, unassignedStudents) => {
+                    resultsSection.innerHTML = "";
+                    resultsSection.style.display = "grid";
+
+                    if (batches.length > 0) {
+                        batches.forEach((batch, index) => {
+                            const batchTableHTML = renderBatchTable(
+                                batch,
+                                index
+                            );
+                            resultsSection.insertAdjacentHTML(
+                                "beforeend",
+                                batchTableHTML
+                            );
+                        });
+                    }
+
+                    if (unassignedStudents.length > 0) {
+                        const unassignedDiv = document.createElement("div");
+                        unassignedDiv.className = "card col-span-full mt-8";
+                        unassignedDiv.innerHTML = `
+                            <h3 class="text-xl font-semibold text-red-700 mb-4">Các Khoa/Viện không thể phân bổ</h3>
+                            <p class="text-red-500">Các khoa/viện dưới đây có số lượng sinh viên vượt quá khả năng chứa của các đợt đã thiết lập:</p>
+                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                ${unassignedStudents
+                                    .map(
+                                        (s) =>
+                                            `<li>${s.department} (${s.count} sinh viên)</li>`
+                                    )
+                                    .join("")}
+                            </ul>
+                        `;
+                        resultsSection.appendChild(unassignedDiv);
+                    }
                 };
 
                 // Hàm xuất file Excel
@@ -483,7 +557,7 @@
 
                 // Hàm thực hiện logic generate
                 const generateResults = () => {
-                    const batches = [];
+                    batches = [];
                     for (let i = 1; i <= batchCount; i++) {
                         const min = parseInt(
                             document.getElementById(`min${i}`).value,
@@ -530,63 +604,7 @@
                         }
                     });
 
-                    // Render results
-                    resultsSection.innerHTML = "";
-                    resultsSection.style.display = "grid";
-
-                    batches.forEach((batch, index) => {
-                        const batchDiv = document.createElement("div");
-                        batchDiv.className = "card";
-                        batchDiv.innerHTML = `
-                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Kết quả Đợt ${
-                                index + 1
-                            }</h3>
-                            <p class="text-sm font-medium text-gray-700">Tổng số sinh viên: <span class="font-bold">${
-                                batch.currentTotal
-                            }</span></p>
-                            <div class="table-container mt-2">
-                                <table class="min-w-full bg-white rounded-lg overflow-hidden">
-                                    <thead>
-                                        <tr>
-                                            <th class="py-3 px-4 text-left">Khoa/Viện</th>
-                                            <th class="py-3 px-4 text-left">Số lượng sinh viên</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${batch.data
-                                            .map(
-                                                (item) => `
-                                            <tr>
-                                                <td>${item.department}</td>
-                                                <td>${item.count}</td>
-                                            </tr>
-                                        `
-                                            )
-                                            .join("")}
-                                    </tbody>
-                                </table>
-                            </div>
-                        `;
-                        resultsSection.appendChild(batchDiv);
-                    });
-
-                    if (unassignedStudents.length > 0) {
-                        const unassignedDiv = document.createElement("div");
-                        unassignedDiv.className = "card col-span-full mt-8";
-                        unassignedDiv.innerHTML = `
-                            <h3 class="text-xl font-semibold text-red-700 mb-4">Các Khoa/Viện không thể phân bổ</h3>
-                            <p class="text-red-500">Các khoa/viện dưới đây có số lượng sinh viên vượt quá khả năng chứa của các đợt đã thiết lập:</p>
-                            <ul class="list-disc list-inside mt-2 space-y-1">
-                                ${unassignedStudents
-                                    .map(
-                                        (s) =>
-                                            `<li>${s.department} (${s.count} sinh viên)</li>`
-                                    )
-                                    .join("")}
-                            </ul>
-                        `;
-                        resultsSection.appendChild(unassignedDiv);
-                    }
+                    renderResults(batches, unassignedStudents);
 
                     // Hiển thị nút Xuất Excel
                     exportExcelButton.style.display = "block";
@@ -595,6 +613,132 @@
                     exportExcelButton.onclick = () =>
                         exportToExcel(batches, unassignedStudents);
                 };
+
+                // Drag and Drop Logic
+                let draggedItem = null;
+
+                resultsSection.addEventListener("dragstart", (e) => {
+                    if (
+                        e.target.tagName === "TR" &&
+                        e.target.classList.contains("draggable-row")
+                    ) {
+                        draggedItem = e.target;
+                        e.dataTransfer.setData(
+                            "text/plain",
+                            JSON.stringify({
+                                department: draggedItem.dataset.department,
+                                count: parseInt(draggedItem.dataset.count, 10),
+                                sourceBatchIndex: parseInt(
+                                    draggedItem.dataset.sourceBatchIndex,
+                                    10
+                                ),
+                                sourceItemIndex: parseInt(
+                                    draggedItem.dataset.sourceItemIndex,
+                                    10
+                                ),
+                            })
+                        );
+                        e.dataTransfer.effectAllowed = "move";
+                    }
+                });
+
+                resultsSection.addEventListener("dragover", (e) => {
+                    e.preventDefault();
+                    const dropTarget = e.target.closest(".card");
+                    if (
+                        dropTarget &&
+                        dropTarget.id.startsWith("batch-results-")
+                    ) {
+                        dropTarget.classList.add("drag-over");
+                    }
+                });
+
+                resultsSection.addEventListener("dragleave", (e) => {
+                    const dropTarget = e.target.closest(".card");
+                    if (dropTarget) {
+                        dropTarget.classList.remove("drag-over");
+                    }
+                });
+
+                resultsSection.addEventListener("drop", (e) => {
+                    e.preventDefault();
+                    const dropTarget = e.target.closest(".card");
+                    if (
+                        !dropTarget ||
+                        !dropTarget.id.startsWith("batch-results-")
+                    ) {
+                        return;
+                    }
+
+                    dropTarget.classList.remove("drag-over");
+
+                    if (draggedItem) {
+                        try {
+                            const droppedData = JSON.parse(
+                                e.dataTransfer.getData("text/plain")
+                            );
+                            const sourceBatchIndex =
+                                droppedData.sourceBatchIndex;
+                            const destinationBatchIndex = parseInt(
+                                dropTarget.id.split("-")[2],
+                                10
+                            );
+
+                            // Check if the item can be added to the destination batch
+                            const destinationBatch =
+                                batches[destinationBatchIndex];
+                            if (
+                                destinationBatch.currentTotal +
+                                    droppedData.count >
+                                destinationBatch.max
+                            ) {
+                                const message = `Không thể di chuyển '${
+                                    droppedData.department
+                                }' vì sẽ vượt quá giới hạn tối đa (${
+                                    destinationBatch.max
+                                }) của Đợt ${destinationBatchIndex + 1}.`;
+                                const messageBox =
+                                    document.createElement("div");
+                                messageBox.className =
+                                    "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 shadow-xl z-50 text-center";
+                                messageBox.innerHTML = `
+                                    <p class="text-red-500 font-semibold mb-4">${message}</p>
+                                    <button class="bg-blue-500 text-white py-2 px-4 rounded-lg" onclick="this.parentElement.remove()">Đóng</button>
+                                `;
+                                document.body.appendChild(messageBox);
+                                return;
+                            }
+
+                            // Remove from source batch
+                            const sourceBatch = batches[sourceBatchIndex];
+                            const itemIndex = sourceBatch.data.findIndex(
+                                (item) =>
+                                    item.department ===
+                                        droppedData.department &&
+                                    item.count === droppedData.count
+                            );
+                            if (itemIndex > -1) {
+                                const [movedItem] = sourceBatch.data.splice(
+                                    itemIndex,
+                                    1
+                                );
+                                sourceBatch.currentTotal -= movedItem.count;
+                            }
+
+                            // Add to destination batch
+                            destinationBatch.data.push({
+                                department: droppedData.department,
+                                count: droppedData.count,
+                            });
+                            destinationBatch.currentTotal += droppedData.count;
+
+                            // Re-render both affected batches
+                            renderResults(batches, []);
+                        } catch (e) {
+                            console.error("Lỗi khi kéo thả:", e);
+                        }
+                    }
+                });
 
                 // Initial render
                 renderDataTable();
