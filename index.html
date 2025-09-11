@@ -10,6 +10,16 @@
         <link rel="stylesheet" href="style.css" />
     </head>
     <body class="bg-gray-100 p-8">
+        <div
+            id="loadingOverlay"
+            class="fixed inset-0 bg-gray-800 bg-opacity-50 flex flex-col items-center justify-center z-50 hidden"
+        >
+            <div class="loader mb-4"></div>
+            <p id="progressText" class="text-lg font-semibold text-white">
+                Đang xử lý... 0%
+            </p>
+        </div>
+
         <div class="container mx-auto space-y-8">
             <!-- HEADER -->
             <header class="text-center">
@@ -438,126 +448,41 @@
                     }
                 });
 
-                // Generate results
+                // Hiển thị nút Xuất Excel sau khi Generate và Loading hoàn tất
                 generateButton.addEventListener("click", () => {
                     if (studentData.length === 0) {
                         alert("Vui lòng nhập dữ liệu sinh viên trước khi tạo.");
                         return;
                     }
 
-                    const batches = [];
-                    for (let i = 1; i <= batchCount; i++) {
-                        const min = parseInt(
-                            document.getElementById(`min${i}`).value,
-                            10
-                        );
-                        const max = parseInt(
-                            document.getElementById(`max${i}`).value,
-                            10
-                        );
-                        if (isNaN(min) || isNaN(max) || min > max) {
-                            alert(`Dữ liệu Min/Max của Đợt ${i} không hợp lệ.`);
-                            return;
+                    // Hiển thị overlay loading
+                    const loadingOverlay =
+                        document.getElementById("loadingOverlay");
+                    const progressText =
+                        document.getElementById("progressText");
+
+                    loadingOverlay.classList.remove("hidden");
+                    progressText.textContent = "Đang xử lý... 0%";
+
+                    let progress = 0;
+
+                    // Hàm mô phỏng tiến trình loading
+                    const simulateLoading = setInterval(() => {
+                        progress += 5; // Tăng tiến trình mỗi lần chạy
+                        progressText.textContent = `Đang xử lý... ${progress}%`;
+
+                        if (progress >= 100) {
+                            clearInterval(simulateLoading); // Dừng tiến trình khi đạt 100%
+                            loadingOverlay.classList.add("hidden"); // Ẩn overlay loading
+
+                            // Thực hiện logic generate sau khi loading hoàn tất
+                            generateResults();
                         }
-                        batches.push({ min, max, currentTotal: 0, data: [] });
-                    }
-
-                    const unassignedStudents = [];
-                    const studentsToAssign = JSON.parse(
-                        JSON.stringify(studentData)
-                    ); // Deep copy
-
-                    // Sort students by count, largest first, to try and fit them better
-                    studentsToAssign.sort((a, b) => b.count - a.count);
-
-                    studentsToAssign.forEach((student) => {
-                        let assigned = false;
-                        for (let i = 0; i < batches.length; i++) {
-                            const batch = batches[i];
-                            if (
-                                batch.currentTotal + student.count <=
-                                batch.max
-                            ) {
-                                batch.data.push({
-                                    department: student.department,
-                                    count: student.count,
-                                });
-                                batch.currentTotal += student.count;
-                                assigned = true;
-                                break; // Move to next student
-                            }
-                        }
-                        if (!assigned) {
-                            unassignedStudents.push(student);
-                        }
-                    });
-
-                    // Render results
-                    resultsSection.innerHTML = "";
-                    resultsSection.style.display = "grid";
-
-                    batches.forEach((batch, index) => {
-                        const batchDiv = document.createElement("div");
-                        batchDiv.className = "card";
-                        batchDiv.innerHTML = `
-                        <h3 class="text-xl font-semibold text-gray-700 mb-4">Kết quả Đợt ${
-                            index + 1
-                        }</h3>
-                        <p class="text-sm font-medium text-gray-700">Tổng số sinh viên: <span class="font-bold">${
-                            batch.currentTotal
-                        }</span></p>
-                        <div class="table-container mt-2">
-                            <table class="min-w-full bg-white rounded-lg overflow-hidden">
-                                <thead>
-                                    <tr>
-                                        <th class="py-3 px-4 text-left">Khoa/Viện</th>
-                                        <th class="py-3 px-4 text-left">Số lượng sinh viên</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${batch.data
-                                        .map(
-                                            (item) => `
-                                        <tr>
-                                            <td>${item.department}</td>
-                                            <td>${item.count}</td>
-                                        </tr>
-                                    `
-                                        )
-                                        .join("")}
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
-                        resultsSection.appendChild(batchDiv);
-                    });
-
-                    if (unassignedStudents.length > 0) {
-                        const unassignedDiv = document.createElement("div");
-                        unassignedDiv.className = "card col-span-full mt-8";
-                        unassignedDiv.innerHTML = `
-                        <h3 class="text-xl font-semibold text-red-700 mb-4">Các Khoa/Viện không thể phân bổ</h3>
-                        <p class="text-red-500">Các khoa/viện dưới đây có số lượng sinh viên vượt quá khả năng chứa của các đợt đã thiết lập:</p>
-                        <ul class="list-disc list-inside mt-2 space-y-1">
-                            ${unassignedStudents
-                                .map(
-                                    (s) =>
-                                        `<li>${s.department} (${s.count} sinh viên)</li>`
-                                )
-                                .join("")}
-                        </ul>
-                    `;
-                        resultsSection.appendChild(unassignedDiv);
-                    }
+                    }, 100); // Cập nhật mỗi 100ms
                 });
 
-                // Hiển thị nút Xuất Excel sau khi Generate
-                generateButton.addEventListener("click", () => {
-                    if (studentData.length === 0) {
-                        alert("Vui lòng nhập dữ liệu sinh viên trước khi tạo.");
-                        return;
-                    }
-
+                // Hàm thực hiện logic generate
+                const generateResults = () => {
                     const batches = [];
                     for (let i = 1; i <= batchCount; i++) {
                         const min = parseInt(
@@ -669,7 +594,7 @@
                     // Gắn sự kiện cho nút Xuất Excel
                     exportExcelButton.onclick = () =>
                         exportToExcel(batches, unassignedStudents);
-                });
+                };
 
                 // Initial render
                 renderDataTable();
