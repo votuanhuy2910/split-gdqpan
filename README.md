@@ -1,6 +1,6 @@
 # split-gdqpan
 
-*Làm thêm chức năng phân luồng theo Trường thành viên*
+__Làm thêm chức năng phân luồng theo Trường thành viên__
 *COB*
   Khoa Quản trị (School of Management)\\
   Khoa Kinh doanh quốc tế - Marketing (School of International Business - Marketing)\\
