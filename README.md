@@ -15,6 +15,7 @@
   - Khoa Quản lý nhà nước (School of Government)
   - Khoa Ngoại ngữ (School of Foreign Languages)
   - Khoa Toán - Thống kê (School of Mathematics - Statistics)
+  - Viện Tài chính bền vững (Sustainable Finance Institute (SFI))
 - CTD
   - Khoa Công nghệ thông tin kinh doanh (School of Business Information Technology)
   - Khoa Thiết kế Truyền thông (School of Media Design)
