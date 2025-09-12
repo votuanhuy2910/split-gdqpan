@@ -138,6 +138,10 @@
                         Tệp Excel phải có 3 cột: Trường thành viên, Khoa/Viện và
                         Số lượng
                     </p>
+                    <p class="text-sm text-gray-500 mt-2">
+                        File excel mẫu:
+                        <a href="/filechiadotmau.xlsx" class="text-blue-600 hover:underline">Tải về</a>
+                    </p>
                 </div>
 
                 <!-- Chia đợt -->
@@ -159,6 +163,7 @@
                                     placeholder="Min"
                                     class="mt-1 w-full"
                                     value="0"
+                                    
                                 />
                             </div>
                             <div class="flex-grow">
@@ -354,7 +359,7 @@
                         <td>
                             <input type="number" value="${
                                 item.count
-                            }" class="w-24 bg-transparent border-none text-center" data-index="${index}">
+                            }" class="w-24 bg-transparent text-center" style="border: 1px solid #000; border-radius: 5px" data-index="${index}">
                         </td>
                         <td>
                             <button class="text-red-500 hover:text-red-700 hover:scale-105 p-3" data-index="${index}">Xóa</button>
@@ -459,10 +464,10 @@
                     batches.forEach((batch, index) => {
                         batch.data.forEach((item) => {
                             combinedData.push({
-                                Đợt: `Đợt ${index + 1}`,
                                 "Trường thành viên": item.university,
                                 "Khoa/Viện": item.department,
                                 "Số lượng sinh viên": item.count,
+                                Đợt: `Đợt ${index + 1}`,
                             });
                         });
                     });
