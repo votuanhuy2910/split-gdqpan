@@ -1,0 +1,137 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #f3f4f6;
+}
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+.card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+/* ...existing code... */
+.card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937; /* Darker gray for better contrast */
+    margin-bottom: 1rem;
+}
+
+#minMaxInputs .flex {
+    gap: 1rem; /* Add spacing between inputs */
+}
+
+#minMaxInputs input {
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#minMaxInputs input:focus {
+    border-color: #3b82f6; /* Blue border on focus */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* Blue shadow */
+    outline: none;
+}
+
+#addBatch {
+    background-color: #6b7280; /* Neutral gray */
+    color: #ffffff;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+#addBatch:hover {
+    background-color: #4b5563; /* Darker gray on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+#addBatch:active {
+    transform: scale(0.95); /* Pressed effect */
+}
+/* ...existing code... */
+.input-group label {
+    font-weight: 500;
+    color: #4b5563;
+}
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    margin-top: 0.25rem;
+}
+.table-container {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+thead th {
+    background-color: #e5e7eb;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #e5e7eb;
+}
+tbody td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    color: #4b5563;
+}
+.remove-batch {
+    margin-top: 1.5rem;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.remove-batch:hover {
+    transform: scale(1.05);
+}
+
+.remove-batch:active {
+    transform: scale(0.95);
+}
+/* Drag & Drop Styles */
+.draggable-row {
+    cursor: grab;
+    transition: background-color 0.2s;
+}
+
+.draggable-row:active {
+    cursor: grabbing;
+}
+
+.drag-over {
+    background-color: #e0f2fe; /* light blue background /
+border: 2px dashed #3b82f6; / blue dashed border */
+    border-radius: 1rem;
+}
+/* Loader animation */
+.loader {
+    border: 8px solid #f3f3f3; /* Light gray */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

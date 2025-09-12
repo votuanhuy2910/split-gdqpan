@@ -15,7 +15,7 @@
             class="fixed inset-0 bg-gray-800 bg-opacity-50 flex flex-col items-center justify-center z-50 hidden"
         >
             <div class="loader mb-4"></div>
-            <p id="progressText" class="text-lg font-semibold text-white">
+            <p id="progressText" class="text-lg font-semibold text-black">
                 Đang xử lý... 0%
             </p>
         </div>
@@ -39,7 +39,23 @@
                     <h2 class="text-xl font-semibold text-gray-700 mb-4">
                         Nhập thông tin Khoa/Viện
                     </h2>
-                    <div class="flex items-end space-x-4">
+                    <div class="flex items-start flex-col space-y-4">
+                        <div class="input-group flex-grow">
+                            <label for="universityName" class="block text-sm"
+                                >Trường thành viên</label
+                            >
+                            <select
+                                id="universityName"
+                                class="mt-1 block w-full border border-gray-300 rounded-lg p-2"
+                            >
+                                <option value="" disabled selected>
+                                    Chọn Trường
+                                </option>
+                                <option value="COB">COB</option>
+                                <option value="CELG">CELG</option>
+                                <option value="CTD">CTD</option>
+                            </select>
+                        </div>
                         <div class="input-group flex-grow">
                             <label for="departmentName" class="block text-sm"
                                 >Khoa/Viện</label
@@ -64,6 +80,11 @@
                                 <option value="Khoa Tài chính">
                                     Khoa Tài chính
                                 </option>
+                                <option
+                                    value="Viện Công nghệ thông minh và tương tác"
+                                >
+                                    Viện Công nghệ thông minh và tương tác
+                                </option>
                             </select>
                         </div>
                         <div class="input-group flex-grow">
@@ -85,7 +106,7 @@
                         </button>
                     </div>
                     <p class="text-sm text-gray-500 mt-2">
-                        Nhập từng Khoa/Viện một cách thủ công.
+                        Nhập từng Khoa/Viện một cách thủ công
                     </p>
                 </div>
 
@@ -97,7 +118,7 @@
                     <div class="flex items-end space-x-4">
                         <div class="input-group flex-grow">
                             <label for="excelFile" class="block text-sm"
-                                >Chọn tệp (.xlsx, .xls)</label
+                                >Chọn tệp (.xlsx ; .xls)</label
                             >
                             <input
                                 type="file"
@@ -114,7 +135,8 @@
                         </button>
                     </div>
                     <p class="text-sm text-gray-500 mt-2">
-                        Tệp Excel phải có 2 cột: "Khoa/Viện" và "Số lượng".
+                        Tệp Excel phải có 3 cột: Trường thành viên, Khoa/Viện và
+                        Số lượng
                     </p>
                 </div>
 
@@ -180,7 +202,7 @@
                             >
                         </p>
                         <p class="text-sm text-gray-500">
-                            Nhấp vào số lượng để sửa.
+                            Nhấp vào số lượng để sửa
                         </p>
                     </div>
                     <div class="table-container">
@@ -189,6 +211,10 @@
                         >
                             <thead>
                                 <tr>
+                                    <th class="py-3 px-4 text-left">STT</th>
+                                    <th class="py-3 px-4 text-left">
+                                        Trường thành viên
+                                    </th>
                                     <th class="py-3 px-4 text-left">
                                         Khoa/Viện
                                     </th>
@@ -206,7 +232,39 @@
                         </table>
                     </div>
                 </div>
-                <div class="md:col-span-1 flex items-center justify-center">
+                <div
+                    class="md:col-span-1 flex flex-col items-center justify-start"
+                >
+                    <div class="mb-4">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">
+                            Phương thức chia đợt:
+                        </h3>
+                        <div class="flex space-x-4">
+                            <label class="flex items-center">
+                                <input
+                                    type="radio"
+                                    name="generationMode"
+                                    value="department"
+                                    class="form-radio"
+                                    checked
+                                />
+                                <span class="ml-2 text-sm text-gray-700"
+                                    >Theo Khoa/Viện</span
+                                >
+                            </label>
+                            <label class="flex items-center">
+                                <input
+                                    type="radio"
+                                    name="generationMode"
+                                    value="university"
+                                    class="form-radio"
+                                />
+                                <span class="ml-2 text-sm text-gray-700"
+                                    >Theo Trường thành viên</span
+                                >
+                            </label>
+                        </div>
+                    </div>
                     <button
                         id="generateButton"
                         class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-full text-lg shadow-lg transform transition-all duration-300 hover:scale-105"
@@ -246,6 +304,8 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", () => {
+                const universityNameInput =
+                    document.getElementById("universityName");
                 const departmentNameInput =
                     document.getElementById("departmentName");
                 const studentCountInput =
@@ -266,6 +326,8 @@
                     document.getElementById("totalStudents");
                 const exportExcelButton =
                     document.getElementById("exportExcelButton");
+                const generationModeInputs =
+                    document.getElementsByName("generationMode");
 
                 let studentData = [];
                 let batches = [];
@@ -286,9 +348,13 @@
                     studentData.forEach((item, index) => {
                         const row = document.createElement("tr");
                         row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${item.university || "N/A"}</td>
                         <td>${item.department}</td>
                         <td>
-                            <input type="number" value="${item.count}" class="w-24 bg-transparent border-none text-center" data-index="${index}">
+                            <input type="number" value="${
+                                item.count
+                            }" class="w-24 bg-transparent border-none text-center" data-index="${index}">
                         </td>
                         <td>
                             <button class="text-red-500 hover:text-red-700" data-index="${index}">Xóa</button>
@@ -300,7 +366,16 @@
                 };
 
                 // Function to render a single batch result table
-                const renderBatchTable = (batch, index) => {
+                const renderBatchTable = (batch, index, mode) => {
+                    let mainHeader, subHeader;
+                    if (mode === "university") {
+                        mainHeader = "Trường thành viên";
+                        subHeader = "Khoa/Viện";
+                    } else {
+                        mainHeader = "Khoa/Viện";
+                        subHeader = "Trường thành viên";
+                    }
+
                     return `
                         <div class="card" id="batch-results-${index}">
                             <h3 class="text-xl font-semibold text-gray-700 mb-4">Kết quả Đợt ${
@@ -313,7 +388,8 @@
                                 <table class="min-w-full bg-white rounded-lg overflow-hidden">
                                     <thead>
                                         <tr>
-                                            <th class="py-3 px-4 text-left">Khoa/Viện</th>
+                                            <th class="py-3 px-4 text-left">${mainHeader}</th>
+                                            <th class="py-3 px-4 text-left">${subHeader}</th>
                                             <th class="py-3 px-4 text-left">Số lượng sinh viên</th>
                                         </tr>
                                     </thead>
@@ -321,7 +397,8 @@
                                         ${batch.data
                                             .map(
                                                 (item, itemIndex) => `
-                                            <tr draggable="true" class="draggable-row" data-department="${item.department}" data-count="${item.count}" data-source-batch-index="${index}" data-source-item-index="${itemIndex}">
+                                            <tr draggable="true" class="draggable-row" data-university="${item.university}" data-department="${item.department}" data-count="${item.count}" data-source-batch-index="${index}" data-source-item-index="${itemIndex}">
+                                                <td>${item.university}</td>
                                                 <td>${item.department}</td>
                                                 <td>${item.count}</td>
                                             </tr>
@@ -336,7 +413,7 @@
                 };
 
                 // Function to render all batch result tables
-                const renderResults = (batches, unassignedStudents) => {
+                const renderResults = (batches, unassignedStudents, mode) => {
                     resultsSection.innerHTML = "";
                     resultsSection.style.display = "grid";
 
@@ -344,7 +421,8 @@
                         batches.forEach((batch, index) => {
                             const batchTableHTML = renderBatchTable(
                                 batch,
-                                index
+                                index,
+                                mode
                             );
                             resultsSection.insertAdjacentHTML(
                                 "beforeend",
@@ -363,7 +441,7 @@
                                 ${unassignedStudents
                                     .map(
                                         (s) =>
-                                            `<li>${s.department} (${s.count} sinh viên)</li>`
+                                            `<li>${s.university} - ${s.department} (${s.count} sinh viên)</li>`
                                     )
                                     .join("")}
                             </ul>
@@ -382,6 +460,7 @@
                         batch.data.forEach((item) => {
                             combinedData.push({
                                 Đợt: `Đợt ${index + 1}`,
+                                "Trường thành viên": item.university,
                                 "Khoa/Viện": item.department,
                                 "Số lượng sinh viên": item.count,
                             });
@@ -393,6 +472,7 @@
                         unassignedStudents.forEach((item) => {
                             combinedData.push({
                                 Đợt: "Không phân bổ",
+                                "Trường thành viên": item.university,
                                 "Khoa/Viện": item.department,
                                 "Số lượng sinh viên": item.count,
                             });
@@ -408,22 +488,31 @@
                     );
 
                     // Xuất file Excel
-                    XLSX.writeFile(workbook, "KetQuaChiaDot.xlsx");
+                    XLSX.writeFile(
+                        workbook,
+                        "KetQuaChiaDotHocGDQP-AN_K51.xlsx"
+                    );
                 };
 
                 // Add department manually
                 addDepartmentBtn.addEventListener("click", () => {
+                    const university = universityNameInput.value.trim();
                     const name = departmentNameInput.value.trim();
                     const count = parseInt(studentCountInput.value, 10);
 
-                    if (name && !isNaN(count) && count > 0) {
-                        studentData.push({ department: name, count: count });
+                    if (university && name && !isNaN(count) && count > 0) {
+                        studentData.push({
+                            university: university,
+                            department: name,
+                            count: count,
+                        });
                         renderDataTable();
+                        universityNameInput.value = "";
                         departmentNameInput.value = "";
                         studentCountInput.value = "";
                     } else {
                         alert(
-                            "Vui lòng nhập tên Khoa/Viện và số lượng hợp lệ."
+                            "Vui lòng nhập đầy đủ Trường thành viên, Khoa/Viện và số lượng hợp lệ."
                         );
                     }
                 });
@@ -474,9 +563,10 @@
                         const worksheet = workbook.Sheets[firstSheetName];
                         const json = XLSX.utils.sheet_to_json(worksheet);
 
-                        // Map the data to the correct format, assuming column headers "Khoa/Viện" and "Số lượng"
+                        // Map the data to the correct format, assuming column headers "Trường thành viên", "Khoa/Viện" and "Số lượng"
                         studentData = json
                             .map((row) => ({
+                                university: row["Trường thành viên"],
                                 department: row["Khoa/Viện"],
                                 count: parseInt(row["Số lượng"], 10),
                             }))
@@ -529,6 +619,10 @@
                         return;
                     }
 
+                    const selectedMode = document.querySelector(
+                        'input[name="generationMode"]:checked'
+                    ).value;
+
                     // Hiển thị overlay loading
                     const loadingOverlay =
                         document.getElementById("loadingOverlay");
@@ -550,13 +644,22 @@
                             loadingOverlay.classList.add("hidden"); // Ẩn overlay loading
 
                             // Thực hiện logic generate sau khi loading hoàn tất
-                            generateResults();
+                            generateResults(selectedMode);
                         }
                     }, 100); // Cập nhật mỗi 100ms
                 });
 
+                // Fisher-Yates shuffle algorithm to randomize the array
+                const shuffleArray = (array) => {
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [array[i], array[j]] = [array[j], array[i]];
+                    }
+                    return array;
+                };
+
                 // Hàm thực hiện logic generate
-                const generateResults = () => {
+                const generateResults = (mode) => {
                     batches = [];
                     for (let i = 1; i <= batchCount; i++) {
                         const min = parseInt(
@@ -574,12 +677,49 @@
                         batches.push({ min, max, currentTotal: 0, data: [] });
                     }
 
-                    const unassignedStudents = [];
-                    const studentsToAssign = JSON.parse(
+                    let studentsToAssign = JSON.parse(
                         JSON.stringify(studentData)
-                    ); // Deep copy
+                    );
 
-                    // Sort students by count, largest first, to try and fit them better
+                    // Luôn ưu tiên Khoa "Viện Công nghệ thông minh và tương tác" của "CTD"
+                    const priorityIndex = studentsToAssign.findIndex(
+                        (s) =>
+                            s.university === "CTD" &&
+                            s.department ===
+                                "Viện Công nghệ thông minh và tương tác"
+                    );
+
+                    if (priorityIndex > -1) {
+                        const [priorityStudent] = studentsToAssign.splice(
+                            priorityIndex,
+                            1
+                        );
+                        if (
+                            batches[0].currentTotal + priorityStudent.count <=
+                            batches[0].max
+                        ) {
+                            batches[0].data.push(priorityStudent);
+                            batches[0].currentTotal += priorityStudent.count;
+                        } else {
+                            // Nếu không đủ chỗ ở đợt 1, thêm lại vào đầu danh sách để xử lý sau
+                            studentsToAssign.unshift(priorityStudent);
+                        }
+                    }
+
+                    // Sắp xếp các sinh viên còn lại dựa trên chế độ đã chọn
+                    if (mode === "university") {
+                        studentsToAssign = shuffleArray(studentsToAssign);
+                        studentsToAssign.sort((a, b) =>
+                            a.university.localeCompare(b.university)
+                        );
+                    } else {
+                        // mode === 'department'
+                        studentsToAssign = shuffleArray(studentsToAssign);
+                    }
+
+                    const unassignedStudents = [];
+
+                    // Sắp xếp sinh viên còn lại theo số lượng, từ lớn nhất đến nhỏ nhất
                     studentsToAssign.sort((a, b) => b.count - a.count);
 
                     studentsToAssign.forEach((student) => {
@@ -591,12 +731,13 @@
                                 batch.max
                             ) {
                                 batch.data.push({
+                                    university: student.university,
                                     department: student.department,
                                     count: student.count,
                                 });
                                 batch.currentTotal += student.count;
                                 assigned = true;
-                                break; // Move to next student
+                                break; // Chuyển sang sinh viên tiếp theo
                             }
                         }
                         if (!assigned) {
@@ -604,7 +745,7 @@
                         }
                     });
 
-                    renderResults(batches, unassignedStudents);
+                    renderResults(batches, unassignedStudents, mode);
 
                     // Hiển thị nút Xuất Excel
                     exportExcelButton.style.display = "block";
@@ -626,6 +767,7 @@
                         e.dataTransfer.setData(
                             "text/plain",
                             JSON.stringify({
+                                university: draggedItem.dataset.university,
                                 department: draggedItem.dataset.department,
                                 count: parseInt(draggedItem.dataset.count, 10),
                                 sourceBatchIndex: parseInt(
@@ -727,13 +869,17 @@
 
                             // Add to destination batch
                             destinationBatch.data.push({
+                                university: droppedData.university,
                                 department: droppedData.department,
                                 count: droppedData.count,
                             });
                             destinationBatch.currentTotal += droppedData.count;
 
                             // Re-render both affected batches
-                            renderResults(batches, []);
+                            const selectedMode = document.querySelector(
+                                'input[name="generationMode"]:checked'
+                            ).value;
+                            renderResults(batches, [], selectedMode);
                         } catch (e) {
                             console.error("Lỗi khi kéo thả:", e);
                         }

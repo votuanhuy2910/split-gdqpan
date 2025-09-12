@@ -1,28 +1,116 @@
+/*File: style.cssDescription: Custom styling for a modern and clean user interface.*/ /* ================== General Styling ================== */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+:root {
+    --primary-color: #4b6cb7;
+    --secondary-color: #182848;
+    --background-light: #f3f4f6;
+    --background-dark: #e5e7eb;
+    --card-bg: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --red-alert: #ef4444;
+    --green-success: #22c55e;
+    --blue-accent: #3b82f6;
+    --indigo-accent: #4f46e5;
+}
 body {
     font-family: "Inter", sans-serif;
-    background-color: #f3f4f6;
+    background: var(--background-light);
+    color: var(--text-primary);
+    line-height: 1.6;
 }
 .container {
-    max-width: 1400px;
+    max-width: 2200px;
     margin: 0 auto;
     padding: 2rem;
-}
+} /* ================== Card and Container ================== */
 .card {
-    background-color: #ffffff;
+    background-color: var(--card-bg);
     border-radius: 1rem;
-    padding: 1.5rem;
+    padding: 2rem;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+        rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+        rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+h1,
+h2,
+h3 {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+h1 {
+    font-size: 2.5rem;
+}
+h2 {
+    font-size: 1.75rem;
+    border-bottom: 2px solid var(--background-dark);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+} /* ================== Form and Input Styling ================== */
+.input-group label {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.75rem;
+    margin-top: 0.5rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #f9fafb;
+}
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: var(--blue-accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+} /* ================== Button Styling ================== */
+button {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
         0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
-/* ...existing code... */
-.card h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #1f2937; /* Darker gray for better contrast */
-    margin-bottom: 1rem;
+.bg-blue-600 {
+    background-color: var(--blue-accent);
 }
-
+.bg-blue-600:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px -2px rgba(59, 130, 246, 0.2);
+}
+.bg-green-600 {
+    background-color: var(--green-success);
+}
+.bg-green-600:hover {
+    background-color: #16a34a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px -2px rgba(34, 197, 94, 0.2);
+}
+.bg-indigo-600 {
+    background-image: linear-gradient(to right, #4f46e5, #6366f1);
+}
+.bg-indigo-600:hover {
+    background-image: linear-gradient(to right, #4338ca, #4f46e5);
+    transform: translateY(-2px) scale(1.02);
+}
+.bg-indigo-600:active {
+    transform: translateY(0) scale(1);
+} /* ================== Table Styling ================== */
+.table-container {
+    overflow-x: auto;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
 #minMaxInputs .flex {
     gap: 1rem; /* Add spacing between inputs */
 }
@@ -39,90 +127,74 @@ body {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* Blue shadow */
     outline: none;
 }
-
-#addBatch {
-    background-color: #6b7280; /* Neutral gray */
-    color: #ffffff;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transition: background-color 0.2s, transform 0.2s;
-}
-
-#addBatch:hover {
-    background-color: #4b5563; /* Darker gray on hover */
-    transform: scale(1.05); /* Slight zoom effect */
-}
-
-#addBatch:active {
-    transform: scale(0.95); /* Pressed effect */
-}
-/* ...existing code... */
-.input-group label {
-    font-weight: 500;
-    color: #4b5563;
-}
-.input-group input,
-.input-group select {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    margin-top: 0.25rem;
-}
-.table-container {
-    overflow-x: auto;
-}
 table {
     width: 100%;
     border-collapse: collapse;
 }
 thead th {
-    background-color: #e5e7eb;
+    background-color: var(--background-dark);
     text-align: left;
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    color: #374151;
-    border-bottom: 2px solid #e5e7eb;
+    padding: 1rem 1.25rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    border-bottom: 2px solid #d1d5db;
 }
 tbody td {
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.25rem;
     border-bottom: 1px solid #e5e7eb;
-    color: #4b5563;
 }
-.remove-batch {
-    margin-top: 1.5rem;
-    transition: background-color 0.2s, transform 0.2s;
+tbody tr:nth-child(even) {
+    background-color: #f9fafb;
 }
-
-.remove-batch:hover {
-    transform: scale(1.05);
-}
-
-.remove-batch:active {
-    transform: scale(0.95);
+tbody tr:hover {
+    background-color: #eef2ff;
+    transition: background-color 0.2s;
 }
 .draggable-row {
     cursor: grab;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.draggable-row:active {
+    cursor: grabbing;
+    transform: scale(1.01);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 .drag-over {
-    background-color: #e0f2fe;
+    background-color: #e0e7ff !important;
+    border: 2px dashed var(--blue-accent);
+} /* ================== Loading Overlay ================== */
+#loadingOverlay {
+    background-color: rgba(243, 244, 246, 0.85);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
-/* Loader animation */
 .loader {
-    border: 8px solid #f3f3f3; /* Light gray */
-    border-top: 8px solid #3498db; /* Blue */
+    border: 6px solid rgba(0, 0, 0, 0.1);
+    border-top: 6px solid var(--blue-accent);
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
     0% {
         transform: rotate(0deg);
     }
     100% {
         transform: rotate(360deg);
+    }
+} /* ================== Responsive Design ================== */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    .card {
+        padding: 1.5rem;
+    }
+    h1 {
+        font-size: 2rem;
+    }
+    h2 {
+        font-size: 1.5rem;
     }
 }
